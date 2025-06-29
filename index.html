@@ -1,49 +1,32 @@
+<!-- index.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jane Doe - Portfolio</title>
-  <link rel="stylesheet" href="styles.css" />
+    <title>CSV to SQL (Browser Version)</title>
+    <script>
+        function convertToSQL() {
+            const csv = document.getElementById('csv').value;
+            const tableName = document.getElementById('table_name').value || 'my_table';
+            const rows = csv.trim().split('\n');
+            const headers = rows[0].split(',').map(h => h.trim().replace(/[^a-zA-Z0-9_]/g, '_'));
+            let sql = '';
+            
+            for (let i = 1; i < rows.length; i++) {
+                const values = rows[i].split(',').map(v => 
+                    v.trim() === '' ? 'NULL' : `'${v.replace(/'/g, "''")}'`
+                );
+                sql += `INSERT INTO ${tableName} (${headers.join(', ')}) VALUES (${values.join(', ')});\n`;
+            }
+            
+            document.getElementById('output').value = sql;
+        }
+    </script>
 </head>
 <body>
-  <header>
-    <h1>Jane Doe</h1>
-    <p>Full Stack Developer</p>
-    <nav>
-      <a href="#projects">Projects</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </header>
-
-  <main>
-    <section id="projects">
-      <h2>Projects</h2>
-      <div class="project">
-        <h3>Project One</h3>
-        <p>Description of the first project.</p>
-      </div>
-      <div class="project">
-        <h3>Project Two</h3>
-        <p>Description of the second project.</p>
-      </div>
-    </section>
-
-    <section id="about">
-      <h2>About Me</h2>
-      <p>I build efficient web applications using modern technologies.</p>
-    </section>
-
-    <section id="contact">
-      <h2>Contact</h2>
-      <p>Email: jane@example.com</p>
-      <p>GitHub: github.com/janedoe</p>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Jane Doe</p>
-  </footer>
+    <h1>CSV to SQL Converter</h1>
+    <textarea id="csv" rows="10" cols="50" placeholder="Paste CSV here..."></textarea><br>
+    <input type="text" id="table_name" placeholder="Table name (default: my_table)"><br>
+    <button onclick="convertToSQL()">Convert</button><br>
+    <textarea id="output" rows="10" cols="50" readonly></textarea>
 </body>
 </html>
